@@ -1,0 +1,2 @@
+Both Google clound and Espeak use encoding UTF-8
+

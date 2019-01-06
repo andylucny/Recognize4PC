@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
   listen(sock, 5);
   do {
     msgsock = accept(sock, 0, 0);
-    if (msgsock == -1) {f
+    if (msgsock == -1) {
         perror("on accept");
         exit(1);
     }

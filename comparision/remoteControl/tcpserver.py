@@ -12,21 +12,23 @@ class ReceiverServiceAgent(Agent):
         self.buffer = ''
         super().__init__()
         
-    def getline(self):
-        while self.buffer.find('\n')==-1:
-            self.buffer += self.socket.recv(1024).decode()
-        result = re.sub('[\r\n].*','',self.buffer)
-        self.buffer = self.buffer[self.buffer.find('\n')+1:]
+    def get(self):
+        if len(self.buffer) == 0:
+            self.buffer = self.socket.recv(1024).decode()
+        if len(self.buffer) == 0:
+            return ''
+        result = self.buffer[:1]
+        self.buffer = self.buffer[1:]
         return result
      
-    def putline(self,line):
-        self.socket.send((line+'\r\n').encode())
+    def put(self,data):
+        self.socket.send((data).encode())
         
     def init(self):
         try:
             print('starting reception on port',self.name)
             while not self.stopped:
-                data = self.getline()
+                data = self.get()
                 if len(data) > 0:
                     Space.write(self.name,data)
         except Exception as e:
@@ -48,45 +50,34 @@ class ReceiverAgent(Agent):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.bind(('0.0.0.0',self.port))
-        except:
+        except Exception as e:
+            print('tcpserver',e)
             self.stop()
         while not self.stopped:
             try:
                 sock.listen(1)
                 client, address = sock.accept()
                 ReceiverServiceAgent(client,self.name)
-            except:
-                pass
+            except Exception as e:
+                print('tcpserver',e)
         try:
             sock.close()
-        except:
-            pass
+        except Exception as e:
+            print('tcpserver',e)
   
     def senseSelectAct(self):
         pass
 
-class Recognize4PC:
+class TcpServer:
 
     def __init__(self, port=7171):
         self.name = 'text'
         ReceiverAgent(port,self.name)
         self.matched = []
-        self.text = ''
 
     def command(self):
-        self.text = Space.read(self.name,'')
+        text = Space.read(self.name,'')
         Space.write(self.name,'')
-        self.text = self.text.lower().strip()
-        return self.text
+        text = text.lower().strip()
+        return text
     
-    def match(self,pattern,text=''):
-        search = re.search(pattern,text if text != '' else self.text)
-        if search is None:
-            self.matched = []
-            return False
-        else:
-            self.matched = search.groups()
-            return True
-
-    def matched(self):
-        return self.matched

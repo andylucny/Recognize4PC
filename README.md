@@ -13,4 +13,4 @@ it is turned to voice control. Example of such student project is in directory V
 The easiest way how install apk in the mobile phone is to install Total Commander into mobile phone and open by it the apk file
 transferred somewhere to mobile phone filesystem.
 
-cite Lúčny, A. (2020). Easy Controlling a Robot using Voice for Hobbiests. Robotics In Education 2020, Bratislava</a>
+cite Lúčny, A. (2020). Easy Controlling a Robot using Voice for Hobbiests. <a href="http://www.agentspace.org/andy/lucny-rie2020.pdf">Robotics In Education 2020, Bratislava</a>
